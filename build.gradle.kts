@@ -2,7 +2,8 @@ plugins {
   groovy
   `java-library`
   `maven-publish`
-  id("org.sonarqube") version "2.7"
+  jacoco
+  id("com.github.kt3k.coveralls") version "2.8.4"
 }
 
 allprojects {
@@ -13,7 +14,7 @@ allprojects {
   apply(plugin = "groovy")
   apply(plugin = "java-library")
   apply(plugin = "maven-publish")
-  apply(plugin = "org.sonarqube")
+  apply(plugin = "jacoco")
 
   group = "org.renke"
   version = "1.0-SNAPSHOT"
@@ -37,12 +38,49 @@ allprojects {
     }
   }
 
-  sonarqube {
-    properties {
-      property("sonar.projectKey", "org.renke.spork")
-      property("sonar.organization", "renke0-github")
-      property("sonar.host.url", "https://sonarcloud.io")
-      property("sonar.groovy.binaries", sourceSets.main.get().output.classesDirs)
+  jacoco {
+    toolVersion = "0.8.4"
+    reportsDir = file("$buildDir/jacoco")
+  }
+}
+
+subprojects {
+  tasks.jacocoTestReport {
+    additionalSourceDirs.setFrom(files(sourceSets.main.get().allSource.srcDirs))
+    sourceDirectories.setFrom(files(sourceSets.main.get().allSource.srcDirs))
+    classDirectories.setFrom(files(sourceSets.main.get().output))
+    reports {
+      xml.isEnabled = false
+      csv.isEnabled = false
+      html.destination = file("$buildDir/jacoco/html")
     }
   }
+}
+
+tasks.register<JacocoReport>("jacocoRootReport") {
+  dependsOn(subprojects.map { it.getTasksByName("test", true) })
+  additionalSourceDirs.setFrom(files(subprojects.map {
+    it.sourceSets.main.get().allSource.srcDirs
+  }))
+  sourceDirectories.setFrom(files(subprojects.map {
+    it.sourceSets.main.get().allSource.srcDirs
+  }))
+  classDirectories.setFrom(files(subprojects.map {
+    it.sourceSets.main.get().output
+  }))
+  executionData.setFrom(files(subprojects.flatMap {
+    it.getTasksByName("jacocoTestReport", true).map { r ->
+      (r as JacocoReport).executionData
+    }
+  }))
+  reports {
+    xml.isEnabled = true
+    csv.isEnabled = false
+    html.isEnabled = true
+    xml.destination = file("$buildDir/jacoco/report.xml")
+  }
+}
+
+coveralls {
+  jacocoReportPath = "$buildDir/jacoco/report.xml"
 }

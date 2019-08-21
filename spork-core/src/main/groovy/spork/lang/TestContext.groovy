@@ -23,12 +23,14 @@ class TestContext {
         .collect { new MapEntry(it, [:]) } as Entry[])
   }
 
-  def save(ContextLevel level = SCENARIO, String key, def value) {
-    context.get(level).put(key, value)
+  void save(ContextLevel level = SCENARIO, String key, def value) {
+    context.get(level)
+      .put(key, value)
   }
 
-  def clear(ContextLevel level) {
-    context.get(level).clear()
+  void clear(ContextLevel level) {
+    context.get(level)
+      .clear()
   }
 
   def clearAll() {
