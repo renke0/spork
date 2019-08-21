@@ -4,12 +4,32 @@ jdk:
   - openjdk11
 
 env:
-  - CI=true
+  matrix:
+    - CI=true
 
 before_install:
   - curl -L -o download-gradle-wrapper.sh "https://raw.githubusercontent.com/renke0/toolbox/master/gradle/download-gradle-wrapper.sh"
   - chmod +x download-gradle-wrapper.sh
   - sh download-gradle-wrapper.sh 5.6
 
-install: ./gradlew assemble
-script: ./gradlew check
+install: "./gradlew assemble"
+
+script:
+  - "./gradlew check"
+  - >
+    if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then \
+      ./gradlew sonarqube  \
+        -Dsonar.login=$SONARCLOUD_TOKEN \
+        -Dsonar.pullrequest.branch=$TRAVIS_PULL_REQUEST_BRANCH \
+        -Dsonar.pullrequest.key=$TRAVIS_PULL_REQUEST \
+        -Dsonar.pullrequest.base=$TRAVIS_BRANCH \
+        -Dsonar.pullrequest.provider=github \
+        -Dsonar.pullrequest.github.repository=renke0/spork \
+        -Dsonar.pullrequest.github.endpoint=https://api.github.com/; \
+    fi
+
+addons:
+  sonarcloud:
+    organization: spork-token
+    token:
+      secure: $SONARCLOUD_TOKEN
