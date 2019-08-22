@@ -3,15 +3,17 @@ package spork.lang
 import static java.util.Map.ofEntries
 import static spork.lang.ContextLevel.SCENARIO
 
+import groovy.transform.CompileStatic
 import java.util.Map.Entry
 
+@CompileStatic
 class TestContext {
   private static TestContext singleton
 
   private final Map<TestContext, Map<String, Object>> context
 
   static testContext() {
-    if (singleton == null) {
+    if (!singleton) {
       singleton = new TestContext()
     }
     return singleton
@@ -23,25 +25,25 @@ class TestContext {
         .collect { new MapEntry(it, [:]) } as Entry[])
   }
 
-  def save(ContextLevel level = SCENARIO, String key, def value) {
-    context.get(level).put(key, value)
+  void save(ContextLevel level = SCENARIO, String key, def value) {
+    context.get(level)
+      .put(key, value)
   }
 
-  def clear(ContextLevel level) {
-    context.get(level).clear()
+  void clear(ContextLevel level) {
+    context.get(level)
+      .clear()
   }
 
-  def clearAll() {
+  void clearAll() {
     ContextLevel.values()
       .each { clear(it) }
   }
 
   def get(String key) {
-    for (def level : ContextLevel.values()) {
-      if (context.get(level).containsKey(key)) {
-        return context.get(level).get(key)
-      }
-    }
-    return null
+    return ContextLevel.values()
+      .collect { context.get(it) }
+      .find { it.containsKey(key) }
+      ?.get(key)
   }
 }

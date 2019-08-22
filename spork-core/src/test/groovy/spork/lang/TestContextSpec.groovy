@@ -101,6 +101,16 @@ class TestContextSpec extends Specification {
       result == value2
   }
 
+  def "get -> non existent"() {
+    given:
+      def subject = testContext()
+      def key = randomString()
+    when:
+      def result = subject.get(key)
+    then:
+      !result
+  }
+
   private static innerContext() {
     testContext().singleton.context
   }
