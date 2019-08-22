@@ -33,7 +33,7 @@ class TestContext {
       .clear()
   }
 
-  def clearAll() {
+  void clearAll() {
     ContextLevel.values()
       .each { clear(it) }
   }

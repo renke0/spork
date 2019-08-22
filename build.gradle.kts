@@ -3,7 +3,6 @@ plugins {
   `java-library`
   `maven-publish`
   jacoco
-  id("com.github.kt3k.coveralls") version "2.8.4"
 }
 
 allprojects {
@@ -52,12 +51,11 @@ subprojects {
     reports {
       xml.isEnabled = false
       csv.isEnabled = false
-      html.destination = file("$buildDir/jacoco/html")
     }
   }
 }
 
-tasks.register<JacocoReport>("jacocoRootReport") {
+tasks.register<JacocoReport>("codeCoverageReport") {
   dependsOn(subprojects.map { it.getTasksByName("test", true) })
   additionalSourceDirs.setFrom(files(subprojects.map {
     it.sourceSets.main.get().allSource.srcDirs
@@ -74,13 +72,11 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     }
   }))
   reports {
-    xml.isEnabled = true
     csv.isEnabled = false
+    xml.isEnabled = true
+    xml.destination = file("$buildDir/reports/jacoco/report.xml")
     html.isEnabled = true
-    xml.destination = file("$buildDir/jacoco/report.xml")
+    html.destination = file("$buildDir/reports/jacoco/report")
   }
 }
 
-coveralls {
-  jacocoReportPath = "$buildDir/jacoco/report.xml"
-}
