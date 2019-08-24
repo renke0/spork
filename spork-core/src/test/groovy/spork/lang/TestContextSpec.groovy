@@ -101,7 +101,7 @@ class TestContextSpec extends Specification {
       result == value2
   }
 
-  def "get -> non existent"() {
+  def "get -> not existing"() {
     given:
       def subject = testContext()
       def key = randomString()

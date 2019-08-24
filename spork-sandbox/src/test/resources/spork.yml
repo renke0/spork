@@ -1,0 +1,5 @@
+spork:
+  http-mock:
+    mock-server:
+      url: localhost
+      port: 1080

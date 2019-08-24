@@ -1,7 +1,11 @@
-.idea/
 .gradle/
+.idea/
 build/
 gradle/
+out/
 secrets/
+tmp/
 gradlew
 gradlew.bat
+package-lock.json
+*.log

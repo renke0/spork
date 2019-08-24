@@ -17,7 +17,7 @@ allprojects {
   version = "1.0-SNAPSHOT"
 
   dependencies {
-    api("org.codehaus.groovy:groovy-all:2.5.8")
+    api("org.codehaus.groovy:groovy-all:2.5.3")
     api("org.spockframework:spock-core:1.3-groovy-2.5")
   }
 

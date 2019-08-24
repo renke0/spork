@@ -1,12 +1,11 @@
 package spork.lang
 
-import static spork.lang.ContextLevel.SCENARIO
-import static spork.lang.TestContext.testContext
-
 import spock.lang.Specification
+import spork.internal.PropertyResolver
 
 class Integration extends Specification {
-  def cleanup() {
-    testContext().clear(SCENARIO)
+  def setupSpec() {
+    PropertyResolver.properties()
+    TestContext.testContext()
   }
 }
