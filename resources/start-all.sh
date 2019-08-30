@@ -5,4 +5,4 @@ cd ${script_path}
 
 sh start-mockserver.sh 1080
 
-echo "Finished startup"
+echo "finished startup"

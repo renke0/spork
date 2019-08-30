@@ -3,25 +3,14 @@ package spork.internal
 import org.yaml.snakeyaml.Yaml
 
 class PropertyResolver {
-  private static PropertyResolver singleton
   private Map properties
 
-  static PropertyResolver properties() {
-    if (!singleton) {
-      singleton = new PropertyResolver()
-    }
-    return singleton
+  PropertyResolver(String propertyFilePath) {
+    initializeProperties(propertyFilePath)
   }
 
-  private PropertyResolver() {
-    initializeProperties()
-  }
-
-  void initializeProperties() {
-    def url = getClass().getResource("/spork.yml")
-    if (!url) {
-      url = getClass().getResource("/spork.yaml")
-    }
+  void initializeProperties(String propertyFilePath) {
+    def url = getClass().getClassLoader().getResource(propertyFilePath)
     if (url) {
       properties = new Yaml().load(url.text)
     } else {
@@ -46,6 +35,11 @@ class PropertyResolver {
   boolean propertyAsBoolean(String property) {
     def value = propertyAsString(property)
     return value ? Boolean.valueOf(value) : null
+  }
+
+  List propertyAsList(String property) {
+    def list = rawValue(property)
+    return list ? list.collect { String.valueOf(it) } : null
   }
 
   private rawValue(String property) {

@@ -1,3 +1,3 @@
 dependencies {
-  testImplementation(project(":spork-http-mock"))
+  testImplementation(project(":spork-mockserver"))
 }

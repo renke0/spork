@@ -3,5 +3,8 @@ rootProject.name = 'spork'
 include ":spork-all"
 include ":spork-core"
 include ":spork-http"
+
 include ":spork-http-mock"
+include ":spork-mockserver"
+
 include ":spork-sandbox"

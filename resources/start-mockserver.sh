@@ -18,4 +18,4 @@ while [[ "$(curl -s -o /dev/null -w "%{http_code}" -X PUT http://localhost:${por
   do sleep 2;
 done
 
-echo "Started mockserver on localhost:$port"
+echo "started mockserver on localhost:$port"
