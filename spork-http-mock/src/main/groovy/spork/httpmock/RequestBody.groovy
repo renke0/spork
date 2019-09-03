@@ -1,8 +1,8 @@
-package spork.httpmock.body
+package spork.httpmock
 
 import static groovy.json.JsonOutput.toJson
-import static spork.httpmock.body.JsonBodyMatcher.MatchingStrategy.LOOSE
-import static spork.httpmock.body.JsonBodyMatcher.MatchingStrategy.STRICT
+import static spork.httpmock.JsonBodyMatcher.MatchingStrategy.LOOSE
+import static spork.httpmock.JsonBodyMatcher.MatchingStrategy.STRICT
 
 class RequestBody {
   static loosely(String json) {

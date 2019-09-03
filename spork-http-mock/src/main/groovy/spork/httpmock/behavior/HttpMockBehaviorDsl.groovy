@@ -1,9 +1,9 @@
-package spork.httpmock
+package spork.httpmock.behavior
 
 import spork.behavior.BehaviorDsl
 import spork.behavior.BehaviorProcessor
 import spork.http.HttpStatus
-import spork.httpmock.body.BodyMatcher
+import spork.httpmock.BodyMatcher
 
 class HttpMockBehaviorDsl extends BehaviorDsl {
 

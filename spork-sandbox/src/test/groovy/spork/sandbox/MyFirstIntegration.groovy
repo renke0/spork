@@ -1,9 +1,9 @@
 package spork.sandbox
 
-import static spork.httpmock.HttpMockBehaviorDsl.any_http_request
-import static spork.httpmock.HttpMockBehaviorDsl.httpMock
-import static spork.httpmock.HttpMockBehaviorDsl.will_return_a_response
-import static spork.httpmock.body.RequestBody.loosely
+import static spork.httpmock.RequestBody.loosely
+import static spork.httpmock.behavior.HttpMockBehaviorDsl.any_http_request
+import static spork.httpmock.behavior.HttpMockBehaviorDsl.httpMock
+import static spork.httpmock.behavior.HttpMockBehaviorDsl.will_return_a_response
 
 import spork.http.HttpStatus
 import spork.lang.Integration

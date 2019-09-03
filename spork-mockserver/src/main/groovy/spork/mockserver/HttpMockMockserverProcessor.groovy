@@ -1,7 +1,7 @@
 package spork.mockserver
 
-import spork.httpmock.HttpMockBehavior
-import spork.httpmock.HttpMockProcessor
+import spork.httpmock.behavior.HttpMockBehavior
+import spork.httpmock.behavior.HttpMockProcessor
 
 class HttpMockMockserverProcessor implements HttpMockProcessor {
   @Override

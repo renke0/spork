@@ -1,7 +1,7 @@
-package spork.httpmock
+package spork.httpmock.behavior
 
 import spork.http.HttpMethod
-import spork.httpmock.body.BodyMatcher
+import spork.httpmock.BodyMatcher
 
 class HttpMockRequest {
   HttpMethod method

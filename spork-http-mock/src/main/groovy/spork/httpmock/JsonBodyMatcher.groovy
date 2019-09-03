@@ -1,4 +1,4 @@
-package spork.httpmock.body
+package spork.httpmock
 
 class JsonBodyMatcher implements BodyMatcher {
   final String json

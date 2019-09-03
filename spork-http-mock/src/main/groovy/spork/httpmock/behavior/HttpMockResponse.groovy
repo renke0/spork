@@ -1,4 +1,4 @@
-package spork.httpmock
+package spork.httpmock.behavior
 
 import spork.http.HttpStatus
 
