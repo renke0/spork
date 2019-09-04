@@ -1,6 +1,6 @@
 package spork.httpmock.behavior
 
-import spork.behavior.Behavior
+import spork.core.behavior.Behavior
 
 class HttpMockBehavior implements Behavior {
   final HttpMockRequest request

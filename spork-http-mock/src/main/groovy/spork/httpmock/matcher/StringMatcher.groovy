@@ -40,7 +40,7 @@ abstract class StringMatcher extends Matcher {
     }
   }
 
-  static class NegatedStringMatcher extends StringMatcher implements Negated<StringMatcher>{
+  static class NegatedStringMatcher extends StringMatcher implements Negated<StringMatcher> {
     final StringMatcher matcher
 
     NegatedStringMatcher(StringMatcher matcher) {

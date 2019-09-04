@@ -6,9 +6,10 @@ import static spork.httpmock.matcher.StringMatcher.anyValue
 import static spork.httpmock.matcher.StringMatcher.matchingRegex
 import static spork.httpmock.matcher.StringMatcher.plainText
 
+import groovy.json.JsonOutput
 import java.util.regex.Pattern
-import spork.behavior.BehaviorDsl
-import spork.behavior.BehaviorProcessor
+import spork.core.behavior.BehaviorDsl
+import spork.core.behavior.BehaviorProcessor
 import spork.http.HttpStatus
 import spork.httpmock.matcher.BodyMatcher
 import spork.httpmock.matcher.NamedParameter
@@ -16,7 +17,7 @@ import spork.httpmock.matcher.StringMatcher
 
 class HttpMockBehaviorDsl extends BehaviorDsl {
 
-  def static httpMock(HttpMockRequestBehavior requestBehavior, HttpMockResponseBehavior responseBehavior) {
+  static void httpMock(HttpMockRequestBehavior requestBehavior, HttpMockResponseBehavior responseBehavior) {
     def behavior = new HttpMockBehavior(requestBehavior.request, responseBehavior.response)
     new HttpMockBehaviorDsl().setup(behavior)
   }
@@ -80,6 +81,10 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
       to_path_matching(matchingRegex(regex))
     }
 
+    void to_path_matching(Pattern pattern) {
+      to_path_matching(matchingRegex(pattern))
+    }
+
     void to_path_matching(StringMatcher matcher) {
       request.path = matcher
     }
@@ -114,6 +119,14 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
 
     void with_query_parameter_matching(Pattern nameRegex) {
       with_query_parameter_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
+    }
+
+    void with_query_parameter_matching(String nameRegex, String valueRegex) {
+      with_query_parameter_matching(new NamedParameter(matchingRegex(nameRegex), matchingRegex(valueRegex)))
+    }
+
+    void with_query_parameter_matching(Pattern nameRegex, Pattern valueRegex) {
+      with_query_parameter_matching(new NamedParameter(matchingRegex(nameRegex), matchingRegex(valueRegex)))
     }
 
     void with_query_parameter_matching(NamedParameter queryParameter) {
@@ -152,6 +165,14 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
       with_header_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
     }
 
+    void with_header_matching(String nameRegex, String valueRegex) {
+      with_header_matching(new NamedParameter(matchingRegex(nameRegex), matchingRegex(valueRegex)))
+    }
+
+    void with_header_matching(Pattern nameRegex, Pattern valueRegex) {
+      with_header_matching(new NamedParameter(matchingRegex(nameRegex), matchingRegex(valueRegex)))
+    }
+
     void with_header_matching(NamedParameter header) {
       request.headers << header
     }
@@ -171,7 +192,11 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
     }
 
     void with_body(Map map) {
-      response.body = map
+      with_body(JsonOutput.toJson(map))
+    }
+
+    void with_body(String body) {
+      response.body = body
     }
 
     void with_header(String name, def value) {

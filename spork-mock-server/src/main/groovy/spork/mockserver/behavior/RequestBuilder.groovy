@@ -15,7 +15,7 @@ import org.mockserver.model.JsonBody
 import org.mockserver.model.KeysToMultiValues
 import org.mockserver.model.NottableString
 import org.mockserver.model.Parameters
-import spork.error.TestConfigurationException
+import spork.core.error.TestConfigurationException
 import spork.httpmock.behavior.HttpMockRequest
 import spork.httpmock.matcher.BodyMatcher
 import spork.httpmock.matcher.BodyMatcher.JsonBodyMatcher

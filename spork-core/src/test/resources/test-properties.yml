@@ -1,0 +1,10 @@
+test:
+  property:
+    string: hi!
+    integer: 1
+    decimal: 1.5
+    boolean: false
+    list:
+      - item1
+      - item2
+      - item3

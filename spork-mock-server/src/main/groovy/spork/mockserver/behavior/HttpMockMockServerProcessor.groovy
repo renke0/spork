@@ -1,6 +1,6 @@
 package spork.mockserver.behavior
 
-import static spork.internal.ApplicationProperties.properties
+import static spork.core.internal.ApplicationProperties.properties
 
 import org.mockserver.client.MockServerClient
 import spork.httpmock.behavior.HttpMockBehavior
@@ -16,9 +16,9 @@ class HttpMockMockServerProcessor implements HttpMockProcessor {
   }
 
   @Override
-  Object setup(HttpMockBehavior behaviorDefinition) {
-    client.when(new RequestBuilder(behaviorDefinition.request).build())
-      .respond(new ResponseBuilder(behaviorDefinition.response).build())
+  Object setup(HttpMockBehavior behavior) {
+    client.when(new RequestBuilder(behavior.request).build())
+      .respond(new ResponseBuilder(behavior.response).build())
     return null
   }
 
@@ -26,5 +26,4 @@ class HttpMockMockServerProcessor implements HttpMockProcessor {
   void reset() {
     client.reset()
   }
-
 }

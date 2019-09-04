@@ -1,0 +1,31 @@
+// variables
+:spork-version: 0.1.0
+
+= spork-mock-server
+
+Implementation of link:../spork-http-mock/README.adoc[spork-http-mock] with support to
+link:http://www.mock-server.com/[mock-server]
+
+[#usage]
+== Usage
+
+* *Gradle:*
+
+[source,groovy,subs=attributes+]
+----
+testImplementation("spork.spork-http-mock:{spork-version}")
+----
+
+* *Maven:*
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+  <groupId>spork</groupId>
+  <artifactId>spork-mock-server</artifactId>
+  <version>{spork-version}</version>
+  <scope>test</scope>
+</dependency>
+----
+
+See also: link:../spork-http-mock/README.adoc#usage[spork-http-mock usage]

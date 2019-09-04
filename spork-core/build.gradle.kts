@@ -6,4 +6,6 @@ dependencies {
   api("javax.servlet:javax.servlet-api")
   api("org.slf4j:slf4j-api")
   api("ch.qos.logback:logback-classic")
+
+  testImplementation(project(":spork-test"))
 }

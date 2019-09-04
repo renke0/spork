@@ -1,5 +1,5 @@
 package spork.httpmock.behavior
 
-import spork.behavior.BehaviorProcessor
+import spork.core.behavior.BehaviorProcessor
 
 interface HttpMockProcessor extends BehaviorProcessor<HttpMockBehavior> {}

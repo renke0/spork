@@ -4,6 +4,6 @@ import spork.http.HttpStatus
 
 class HttpMockResponse {
   HttpStatus status
-  Map body
+  String body
   final Map<String, List<String>> headers = [:]
 }
