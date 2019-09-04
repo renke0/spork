@@ -1,13 +1,13 @@
 package spork.httpmock.behavior
 
-import spork.http.HttpMethod
-import spork.httpmock.BodyMatcher
+import spork.httpmock.matcher.BodyMatcher
+import spork.httpmock.matcher.NamedParameter
+import spork.httpmock.matcher.StringMatcher
 
 class HttpMockRequest {
-  HttpMethod method
-  String path
-  final List<String> pathParameters = []
-  final Map<String, List<String>> queryParameters = [:]
-  final Map<String, List<String>> headers = [:]
+  StringMatcher method
+  StringMatcher path
   BodyMatcher bodyMatcher
+  final List<NamedParameter> queryParameters = []
+  final List<NamedParameter> headers = []
 }

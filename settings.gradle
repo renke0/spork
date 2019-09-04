@@ -5,6 +5,6 @@ include ":spork-core"
 include ":spork-http"
 
 include ":spork-http-mock"
-include ":spork-mockserver"
+include ":spork-mock-server"
 
 include ":spork-sandbox"

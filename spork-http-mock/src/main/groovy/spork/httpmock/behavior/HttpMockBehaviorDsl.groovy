@@ -1,9 +1,18 @@
 package spork.httpmock.behavior
 
+import static spork.httpmock.matcher.BodyMatcher.loosely
+import static spork.httpmock.matcher.BodyMatcher.strictly
+import static spork.httpmock.matcher.StringMatcher.anyValue
+import static spork.httpmock.matcher.StringMatcher.matchingRegex
+import static spork.httpmock.matcher.StringMatcher.plainText
+
+import java.util.regex.Pattern
 import spork.behavior.BehaviorDsl
 import spork.behavior.BehaviorProcessor
 import spork.http.HttpStatus
-import spork.httpmock.BodyMatcher
+import spork.httpmock.matcher.BodyMatcher
+import spork.httpmock.matcher.NamedParameter
+import spork.httpmock.matcher.StringMatcher
 
 class HttpMockBehaviorDsl extends BehaviorDsl {
 
@@ -35,32 +44,116 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
   static class HttpMockRequestBehavior {
     final HttpMockRequest request = new HttpMockRequest()
 
+    void with_body_loosely_matching(Map body) {
+      with_body_matching(loosely(body))
+    }
+
+    void with_body_loosely_matching(String body) {
+      with_body_matching(loosely(body))
+    }
+
+    void with_body_loosely_matching(Object body) {
+      with_body_matching(loosely(body))
+    }
+
+    void with_body_strictly_matching(Map body) {
+      with_body_matching(strictly(body))
+    }
+
+    void with_body_strictly_matching(String body) {
+      with_body_matching(strictly(body))
+    }
+
+    void with_body_strictly_matching(Object body) {
+      with_body_matching(strictly(body))
+    }
+
     void with_body_matching(BodyMatcher bodyMatcher) {
       request.bodyMatcher = bodyMatcher
     }
 
     void to_path(String path) {
-      request.path = path
+      to_path_matching(plainText(path))
     }
 
-    void with_query_parameters(Map<String, Object> parameters) {
-      parameters.forEach { k, v -> with_query_parameter(k, v) }
+    void to_path_matching(String regex) {
+      to_path_matching(matchingRegex(regex))
     }
 
-    void with_query_parameter(String name, def value) {
-      request.queryParameters.put(name, paramList(value))
+    void to_path_matching(StringMatcher matcher) {
+      request.path = matcher
     }
 
-    void with_headers(Map<String, Object> headers) {
-      headers.forEach { k, v -> with_header(k, v) }
+    void with_query_parameter(String name) {
+      with_query_parameter_matching(new NamedParameter(plainText(name), anyValue()))
     }
 
-    void with_header(String name, def value) {
-      request.headers.put(name, paramList(value))
+    void with_query_parameter(StringMatcher name) {
+      with_query_parameter_matching(new NamedParameter(name, anyValue()))
     }
 
-    void with_path_parameters(def ... parameters) {
-      request.pathParameters.addAll(parameters.collect { String.valueOf(it) })
+    void with_query_parameter(String name, String value) {
+      with_query_parameter_matching(new NamedParameter(plainText(name), plainText(value)))
+    }
+
+    void with_query_parameter(StringMatcher name, String value) {
+      with_query_parameter_matching(new NamedParameter(name, plainText(value)))
+    }
+
+    void with_query_parameter(String name, StringMatcher value) {
+      with_query_parameter_matching(new NamedParameter(plainText(name), value))
+    }
+
+    void with_query_parameter(StringMatcher name, StringMatcher value) {
+      with_query_parameter_matching(new NamedParameter(name, value))
+    }
+
+    void with_query_parameter_matching(String nameRegex) {
+      with_query_parameter_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
+    }
+
+    void with_query_parameter_matching(Pattern nameRegex) {
+      with_query_parameter_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
+    }
+
+    void with_query_parameter_matching(NamedParameter queryParameter) {
+      request.queryParameters << queryParameter
+    }
+
+    void with_header(String name) {
+      with_header_matching(new NamedParameter(plainText(name), anyValue()))
+    }
+
+    void with_header(StringMatcher name) {
+      with_header_matching(new NamedParameter(name, anyValue()))
+    }
+
+    void with_header(String name, String value) {
+      with_header_matching(new NamedParameter(plainText(name), plainText(value)))
+    }
+
+    void with_header(StringMatcher name, String value) {
+      with_header_matching(new NamedParameter(name, plainText(value)))
+    }
+
+    void with_header(String name, StringMatcher value) {
+      with_header_matching(new NamedParameter(plainText(name), value))
+    }
+
+    void with_header(StringMatcher name, StringMatcher value) {
+      with_header_matching(new NamedParameter(name, value))
+    }
+
+    void with_header_matching(String nameRegex) {
+      with_header_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
+    }
+
+    void with_header_matching(Pattern nameRegex) {
+      with_header_matching(new NamedParameter(matchingRegex(nameRegex), anyValue()))
+    }
+
+    void with_header_matching(NamedParameter header) {
+      request.headers << header
     }
   }
 
@@ -78,12 +171,7 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
     }
 
     void with_body(Map map) {
-      response.body.clear()
-      response.body << map
-    }
-
-    void with_headers(Map<String, Object> headers) {
-      headers.forEach { k, v -> with_header(k, v) }
+      response.body = map
     }
 
     void with_header(String name, def value) {

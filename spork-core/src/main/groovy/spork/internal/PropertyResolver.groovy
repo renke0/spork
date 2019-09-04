@@ -11,33 +11,29 @@ class PropertyResolver {
 
   void initializeProperties(String propertyFilePath) {
     def url = getClass().getClassLoader().getResource(propertyFilePath)
-    if (url) {
-      properties = new Yaml().load(url.text)
-    } else {
-      properties = [:]
-    }
+    properties = url ? new Yaml().load(url.text) as Map : [:]
   }
 
-  String propertyAsString(String property) {
+  String getPropertyAsString(String property) {
     return rawValue(property) as String
   }
 
-  BigDecimal propertyAsDecimal(String property) {
-    def value = propertyAsString(property)
+  BigDecimal getPropertyAsDecimal(String property) {
+    def value = getPropertyAsString(property)
     return value ? new BigDecimal(value) : null
   }
 
-  Integer propertyAsInteger(String property) {
-    def value = propertyAsString(property)
+  Integer getPropertyAsInteger(String property) {
+    def value = getPropertyAsString(property)
     return value ? Integer.valueOf(value) : null
   }
 
-  boolean propertyAsBoolean(String property) {
-    def value = propertyAsString(property)
+  boolean getPropertyAsBoolean(String property) {
+    def value = getPropertyAsString(property)
     return value ? Boolean.valueOf(value) : null
   }
 
-  List propertyAsList(String property) {
+  List getPropertyAsList(String property) {
     def list = rawValue(property)
     return list ? list.collect { String.valueOf(it) } : null
   }

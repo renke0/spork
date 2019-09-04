@@ -3,12 +3,10 @@ package spork.behavior
 import static org.reflections.util.ClasspathHelper.forJavaClassPath
 import static spork.error.TestConfigurationException.checkConfiguration
 
-import groovy.transform.PackageScope
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 
-@PackageScope
 class BehaviorProcessorProvider {
   private static BehaviorProcessorProvider singleton
 
@@ -18,7 +16,7 @@ class BehaviorProcessorProvider {
     processors = initialize()
   }
 
-  static behaviorProcessorProvider() {
+  static BehaviorProcessorProvider behaviorProcessorProvider() {
     if (!singleton)
       singleton = new BehaviorProcessorProvider()
     return singleton
@@ -28,6 +26,10 @@ class BehaviorProcessorProvider {
     checkConfiguration(processors.containsKey(behaviorProcessorInterface),
       "There is no processor for behavior ${behaviorProcessorInterface.name}")
     return processors.get(behaviorProcessorInterface) as T
+  }
+
+  List<BehaviorProcessor> processors() {
+    return List.copyOf(processors.values())
   }
 
   private static Map<Class, BehaviorProcessor> initialize() {

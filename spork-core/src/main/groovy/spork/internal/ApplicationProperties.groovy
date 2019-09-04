@@ -8,7 +8,7 @@ class ApplicationProperties extends PropertyResolver {
     super(SPORK_CONFIGURATION_FILE)
   }
 
-  static properties() {
+  static ApplicationProperties properties() {
     if (!singleton) {
       singleton = new ApplicationProperties()
     }
