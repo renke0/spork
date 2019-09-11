@@ -1,8 +1,43 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath("com.bmuschko:gradle-clover-plugin:2.2.3")
+  }
+}
+
 plugins {
   groovy
   `java-library`
   `maven-publish`
   id("io.spring.dependency-management") version "1.0.8.RELEASE"
+  id("com.bmuschko.clover") version "2.2.3"
+}
+
+tasks.register("clover") {
+  group = "verification"
+  dependsOn(":cloverAggregateReports")
+}
+
+tasks.register("maven") {
+  group = "publishing"
+  dependsOn(":publishToMavenLocal")
+}
+
+tasks.register("updateReadmeVersion") {
+  group = "documentation"
+  doLast {
+    ant.withGroovyBuilder {
+      "replaceregexp"(
+          "match" to "^\\:spork-version\\: ([0-9\\.]+(-SNAPSHOT)?)$",
+          "replace" to ":spork-version: ${project.version}",
+          "flags" to "g",
+          "byline" to true) {
+        "fileset"("dir" to ".", "includes" to "**/*.adoc")
+      }
+    }
+  }
 }
 
 allprojects {
@@ -14,6 +49,7 @@ allprojects {
   apply(plugin = "java-library")
   apply(plugin = "maven-publish")
   apply(plugin = "io.spring.dependency-management")
+  apply(plugin = "com.bmuschko.clover")
 
   group = "spork"
   version = "0.1.0"
@@ -30,7 +66,12 @@ allprojects {
       dependency("org.mock-server:mockserver-client-java:5.6.1")
       dependency("net.bytebuddy:byte-buddy:1.10.1")
       dependency("org.objenesis:objenesis:3.0.1")
+      dependency("org.openclover:clover:4.3.1")
     }
+  }
+
+  dependencies {
+    clover("org.openclover:clover")
   }
 
   tasks.register<Jar>("sourcesJar") {
@@ -46,18 +87,17 @@ allprojects {
       }
     }
   }
-}
 
-tasks.register("updateReadmeVersion") {
-  doLast {
-    ant.withGroovyBuilder {
-      "replaceregexp"(
-          "match" to "^\\:spork-version\\: ([0-9\\.]+(-SNAPSHOT)?)$",
-          "replace" to ":spork-version: ${project.version}",
-          "flags" to "g",
-          "byline" to true) {
-        "fileset"("dir" to ".", "includes" to "**/README.adoc")
-      }
-    }
+  clover {
+    contexts(closureOf<com.bmuschko.gradle.clover.CloverContextsConvention> {
+      method(delegateClosureOf<com.bmuschko.gradle.clover.CloverMethodContextConvention> {
+        name = "toString"
+        regexp = "public String toString\\(\\)"
+      })
+    })
+    report(closureOf<com.bmuschko.gradle.clover.CloverReportConvention> {
+      html = true
+      filter = "toString"
+    })
   }
 }

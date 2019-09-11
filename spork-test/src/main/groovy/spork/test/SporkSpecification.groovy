@@ -2,6 +2,7 @@ package spork.test
 
 import static java.util.Collections.shuffle
 
+import groovy.json.JsonSlurper
 import spock.lang.Specification
 
 class SporkSpecification extends Specification {
@@ -28,5 +29,9 @@ class SporkSpecification extends Specification {
 
   static <T> T randomItem(T[] items) {
     return randomItem(items.toList())
+  }
+
+  static Map json(String jsonText) {
+    new JsonSlurper().parseText(jsonText) as Map
   }
 }

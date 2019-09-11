@@ -12,6 +12,7 @@ import spork.core.behavior.BehaviorDsl
 import spork.core.behavior.BehaviorProcessor
 import spork.http.HttpStatus
 import spork.httpmock.matcher.BodyMatcher
+import spork.httpmock.matcher.BodyMatcher.JsonPathBodyMatcher
 import spork.httpmock.matcher.NamedParameter
 import spork.httpmock.matcher.StringMatcher
 
@@ -33,13 +34,6 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
 
   def static will_return_a_response(@DelegatesTo(HttpMockResponseBehavior) Closure closure) {
     delegate(new HttpMockResponseBehavior(), closure)
-  }
-
-  private static paramList(def object) {
-    if (object instanceof Collection)
-      return object.collect { String.valueOf(it) }
-    else
-      return [String.valueOf(object as Object)]
   }
 
   static class HttpMockRequestBehavior {
@@ -67,6 +61,10 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
 
     void with_body_strictly_matching(Object body) {
       with_body_matching(strictly(body))
+    }
+
+    void with_body_matching_json_path(String jsonPath) {
+      with_body_matching(new JsonPathBodyMatcher(jsonPath))
     }
 
     void with_body_matching(BodyMatcher bodyMatcher) {
@@ -201,6 +199,13 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
 
     void with_header(String name, def value) {
       response.headers.put(name, paramList(value))
+    }
+
+    private static paramList(def object) {
+      if (object instanceof Collection)
+        return object.collect { String.valueOf(it) }
+      else
+        return [String.valueOf(object as Object)]
     }
   }
 }

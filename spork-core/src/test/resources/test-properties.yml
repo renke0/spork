@@ -3,7 +3,8 @@ test:
     string: hi!
     integer: 1
     decimal: 1.5
-    boolean: false
+    boolean-false: false
+    boolean-true: true
     list:
       - item1
       - item2

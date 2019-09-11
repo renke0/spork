@@ -2,6 +2,7 @@ package spork.core.internal
 
 import spock.lang.Subject
 import spock.lang.Unroll
+import spork.core.error.TestConfigurationException
 import spork.test.SporkSpecification
 
 @Unroll
@@ -20,41 +21,86 @@ class PropertyResolverSpec extends SporkSpecification {
 
   def "getPropertyAsString()"() {
     when:
-      def property = propertyResolver.getPropertyAsString('test.property.string')
+      def value = propertyResolver.getPropertyAsString(property)
     then:
-      property instanceof String
-      property == 'hi!'
+      value == expectation
+    where:
+      label               | property                             | expectation
+      'existing'          | 'test.property.string'               | 'hi!'
+      'non-existing'      | 'test.property.non-existing'         | null
+      'non-existing-root' | 'non-existing.property.non-existing' | null
   }
 
-  def "getPropertyAsInteger()"() {
+  def "getPropertyAsInteger() -> #label"() {
     when:
-      def property = propertyResolver.getPropertyAsInteger('test.property.integer')
+      def value = propertyResolver.getPropertyAsInteger(property)
     then:
-      property instanceof Integer
-      property == 1
+      value == expectation
+    where:
+      label          | property                     | expectation
+      'existing'     | 'test.property.integer'      | 1
+      'non-existing' | 'test.property.non-existing' | null
   }
 
-  def "getPropertyAsDecimal()"() {
+  def "getPropertyAsInteger() -> non integer"() {
     when:
-      def property = propertyResolver.getPropertyAsDecimal('test.property.decimal')
+      propertyResolver.getPropertyAsInteger('test.property.string')
     then:
-      property instanceof BigDecimal
-      property == 1.5
+      thrown(TestConfigurationException)
   }
 
-  def "getPropertyAsBoolean()"() {
+  def "getPropertyAsDecimal() -> #label"() {
     when:
-      def property = propertyResolver.getPropertyAsBoolean('test.property.boolean')
+      def value = propertyResolver.getPropertyAsDecimal(property)
     then:
-      property instanceof Boolean
-      !property
+      value == expectation
+    where:
+      label          | property                     | expectation
+      'existing'     | 'test.property.decimal'      | 1.5
+      'non-existing' | 'test.property.non-existing' | null
   }
 
-  def "getPropertyAsList()"() {
+  def "getPropertyAsDecimal() -> non decimal"() {
     when:
-      def property = propertyResolver.getPropertyAsList('test.property.list')
+      propertyResolver.getPropertyAsDecimal('test.property.string')
     then:
-      property instanceof List
-      property == ['item1', 'item2', 'item3']
+      thrown(TestConfigurationException)
+  }
+
+  def "getPropertyAsBoolean() -> #label"() {
+    when:
+      def value = propertyResolver.getPropertyAsBoolean(property)
+    then:
+      value == expectation
+    where:
+      label            | property                      | expectation
+      'existing true'  | 'test.property.boolean-true'  | true
+      'existing false' | 'test.property.boolean-false' | false
+      'non-existing'   | 'test.property.non-existing'  | null
+  }
+
+  def "getPropertyAsBoolean() -> non boolean"() {
+    when:
+      propertyResolver.getPropertyAsBoolean('test.property.integer')
+    then:
+      thrown(TestConfigurationException)
+  }
+
+  def "getPropertyAsList() -> #label"() {
+    when:
+      def value = propertyResolver.getPropertyAsList(property)
+    then:
+      value == expectation
+    where:
+      label          | property                     | expectation
+      'existing'     | 'test.property.list'         | ['item1', 'item2', 'item3']
+      'non-existing' | 'test.property.non-existing' | null
+  }
+
+  def "getPropertyAsList() -> non list"() {
+    when:
+      propertyResolver.getPropertyAsList('test.property.string')
+    then:
+      thrown(TestConfigurationException)
   }
 }

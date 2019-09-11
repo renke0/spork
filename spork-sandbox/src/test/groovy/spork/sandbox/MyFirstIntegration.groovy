@@ -4,11 +4,11 @@ import static spork.httpmock.behavior.HttpMockBehaviorDsl.any_http_request
 import static spork.httpmock.behavior.HttpMockBehaviorDsl.httpMock
 import static spork.httpmock.behavior.HttpMockBehaviorDsl.will_return_a_response
 
-import org.junit.jupiter.api.Disabled
+import spock.lang.Ignore
 import spork.core.lang.Integration
 import spork.http.HttpStatus
 
-@Disabled
+@Ignore
 class MyFirstIntegration extends Integration {
 
   def test() {

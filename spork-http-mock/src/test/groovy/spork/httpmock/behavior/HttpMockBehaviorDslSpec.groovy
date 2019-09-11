@@ -28,6 +28,26 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
     then:
       type == HttpMockProcessor
   }
+
+  def "any_http_request()"() {
+    given:
+      def closure = {}
+    when:
+      def request = HttpMockBehaviorDsl.any_http_request(closure)
+    then:
+      request instanceof HttpMockRequestBehavior
+      closure.delegate == request
+  }
+
+  def "will_return_a_response()"() {
+    given:
+      def closure = {}
+    when:
+      def response = HttpMockBehaviorDsl.will_return_a_response(closure)
+    then:
+      response instanceof HttpMockResponseBehavior
+      closure.delegate == response
+  }
 }
 
 

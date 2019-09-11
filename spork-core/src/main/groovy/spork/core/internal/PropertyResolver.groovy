@@ -1,6 +1,9 @@
 package spork.core.internal
 
+import static spork.core.error.TestConfigurationException.checkConfiguration
+
 import org.yaml.snakeyaml.Yaml
+import spork.core.error.TestConfigurationException
 
 class PropertyResolver {
   private Map properties
@@ -15,21 +18,35 @@ class PropertyResolver {
 
   BigDecimal getPropertyAsDecimal(String property) {
     def value = getPropertyAsString(property)
-    return value ? new BigDecimal(value) : null
+    try {
+      return value ? new BigDecimal(value) : null
+    } catch (NumberFormatException e) {
+      throw new TestConfigurationException("Property $property is not a decimal", e)
+    }
   }
 
   Integer getPropertyAsInteger(String property) {
     def value = getPropertyAsString(property)
-    return value ? Integer.valueOf(value) : null
+    try {
+      return value ? Integer.valueOf(value) : null
+    } catch (NumberFormatException e) {
+      throw new TestConfigurationException("Property $property is not an integer", e)
+    }
   }
 
-  boolean getPropertyAsBoolean(String property) {
+  Boolean getPropertyAsBoolean(String property) {
     def value = getPropertyAsString(property)
-    return value ? Boolean.valueOf(value) : null
+    switch (value) {
+      case 'true': return true
+      case 'false': return false
+      case null: return null
+      default: throw new TestConfigurationException("Property $property is not a boolean")
+    }
   }
 
   List getPropertyAsList(String property) {
     def list = rawValue(property)
+    checkConfiguration(!list || list instanceof List, "Property $property is not a list")
     return list ? list.collect { String.valueOf(it) } : null
   }
 

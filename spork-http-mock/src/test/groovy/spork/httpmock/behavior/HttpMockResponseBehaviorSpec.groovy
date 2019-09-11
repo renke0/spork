@@ -21,37 +21,35 @@ class HttpMockResponseBehaviorSpec extends SporkSpecification {
       responseBehavior.response.status == status
   }
 
-  def "with_body(#body)"() {
+  def "with_body(#type)"() {
     when:
       responseBehavior.with_body(body)
     then:
-      responseBehavior.response.body == bodyString
+      json(responseBehavior.response.body) == json(bodyString)
     where:
-      body                                    | bodyString
-      ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
-      new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
-      '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
+      type     | body                                    | bodyString
+      'map'    | ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
+      'object' | new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
+      'json'   | '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
   }
 
-  def "with_header()"() {
+  def "with_header() -> #label"() {
     given:
       def name = 'name'
-      def value = 'value'
     when:
       responseBehavior.with_header(name, value)
     then:
       responseBehavior.response.headers.containsKey(name)
-      responseBehavior.response.headers.get(name) == [value]
+      responseBehavior.response.headers.get(name) == expectation
+    where:
+      label      | value                | expectation
+      'single'   | 'value'              | ['value']
+      'multiple' | ['value1', 'value2'] | value
   }
 
   @TupleConstructor
   private static class TestObject {
     String prop1
     int prop2
-
-    @Override
-    String toString() {
-      return "(prop1: $prop1, prop2: $prop2)"
-    }
   }
 }

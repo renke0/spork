@@ -1,9 +1,9 @@
 package spork.httpmock.behavior
 
+import static spork.httpmock.matcher.BodyMatcher.JsonPathBodyMatcher
 import static spork.httpmock.matcher.BodyMatcher.MatchingStrategy.LOOSE
 import static spork.httpmock.matcher.BodyMatcher.MatchingStrategy.STRICT
 
-import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 import spock.lang.Subject
 import spock.lang.Unroll
@@ -23,32 +23,42 @@ class HttpMockRequestBehaviorSpec extends SporkSpecification {
   private firstParameter = { requestBehavior.request.queryParameters.first() }
   private firstHeader = { requestBehavior.request.headers.first() }
 
-  def "with_body_loosely_matching(#body)"() {
+  def "with_body_loosely_matching(#type)"() {
     when:
       requestBehavior.with_body_loosely_matching(body)
     then:
       requestBehavior.request.bodyMatcher instanceof JsonBodyMatcher
-      asMap((requestBehavior.request.bodyMatcher as JsonBodyMatcher).json) == asMap(json)
+      json((requestBehavior.request.bodyMatcher as JsonBodyMatcher).json) == json(json)
       (requestBehavior.request.bodyMatcher as JsonBodyMatcher).strategy == LOOSE
     where:
-      body                                    | json
-      ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
-      new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
-      '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
+      type     | body                                    | json
+      'map'    | ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
+      'object' | new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
+      'json'   | '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
   }
 
-  def "with_body_strictly_matching(#body)"() {
+  def "with_body_strictly_matching(#type)"() {
     when:
       requestBehavior.with_body_strictly_matching(body)
     then:
       requestBehavior.request.bodyMatcher instanceof JsonBodyMatcher
-      asMap((requestBehavior.request.bodyMatcher as JsonBodyMatcher).json) == asMap(json)
+      json((requestBehavior.request.bodyMatcher as JsonBodyMatcher).json) == json(json)
       (requestBehavior.request.bodyMatcher as JsonBodyMatcher).strategy == STRICT
     where:
-      body                                    | json
-      ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
-      new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
-      '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
+      type     | body                                    | json
+      'map'    | ['prop1': 'val1', 'prop2': 2]           | '{"prop1":"val1","prop2":2}'
+      'object' | new TestObject(prop1: 'val1', prop2: 2) | '{"prop1":"val1","prop2":2}'
+      'json'   | '{"prop1":"val1","prop2":2}'            | '{"prop1":"val1","prop2":2}'
+  }
+
+  def "with_body_matching_json_path()"() {
+    given:
+      def jsonPath = '$.hi'
+    when:
+      requestBehavior.with_body_matching_json_path(jsonPath)
+    then:
+      requestBehavior.request.bodyMatcher instanceof JsonPathBodyMatcher
+      (requestBehavior.request.bodyMatcher as JsonPathBodyMatcher).jsonPath == jsonPath
   }
 
   def "with_body_matching()"() {
@@ -58,10 +68,6 @@ class HttpMockRequestBehaviorSpec extends SporkSpecification {
       requestBehavior.with_body_matching(bodyMatcher)
     then:
       requestBehavior.request.bodyMatcher.is(bodyMatcher)
-  }
-
-  private static Map asMap(String json) {
-    new JsonSlurper().parseText(json) as Map
   }
 
   def "to_path()"() {
@@ -343,10 +349,5 @@ class HttpMockRequestBehaviorSpec extends SporkSpecification {
   private static class TestObject {
     String prop1
     int prop2
-
-    @Override
-    String toString() {
-      return "(prop1: $prop1, prop2: $prop2)"
-    }
   }
 }
