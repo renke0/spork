@@ -10,18 +10,18 @@ class BehaviorDslSpec extends SporkSpecification {
   def "setup()"() {
     given:
       def behavior = new TestBehavior()
-      BehaviorProcessorProvider behaviorProcessorProviderMock = Mock()
-      BehaviorProcessor behaviorProcessorMock = Mock()
+      BehaviorAdapterProvider behaviorAdapterProviderMock = Mock()
+      BehaviorAdapter behaviorAdapterMock = Mock()
 
-      GroovyMock(BehaviorProcessorProvider, global: true)
-      BehaviorProcessorProvider.behaviorProcessorProvider() >> behaviorProcessorProviderMock
-      behaviorProcessorProviderMock.getProcessorOfType(_ as Class) >> behaviorProcessorMock
+      GroovyMock(BehaviorAdapterProvider, global: true)
+      BehaviorAdapterProvider.behaviorAdapterProvider() >> behaviorAdapterProviderMock
+      behaviorAdapterProviderMock.getAdapterOfType(_ as Class) >> behaviorAdapterMock
 
       def dsl = new TestBehaviorDsl()
     when:
       def result = dsl.setup(behavior)
     then:
-      1 * behaviorProcessorMock.setup(_ as Behavior)
+      1 * behaviorAdapterMock.setup(_ as Behavior)
       behavior.is(result)
   }
 

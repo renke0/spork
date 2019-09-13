@@ -9,7 +9,7 @@ import static spork.httpmock.matcher.StringMatcher.plainText
 import groovy.json.JsonOutput
 import java.util.regex.Pattern
 import spork.core.behavior.BehaviorDsl
-import spork.core.behavior.BehaviorProcessor
+import spork.core.behavior.BehaviorAdapter
 import spork.http.HttpStatus
 import spork.httpmock.matcher.BodyMatcher
 import spork.httpmock.matcher.BodyMatcher.JsonPathBodyMatcher
@@ -24,8 +24,8 @@ class HttpMockBehaviorDsl extends BehaviorDsl {
   }
 
   @Override
-  protected Class<? extends BehaviorProcessor> processorType() {
-    return HttpMockProcessor
+  protected Class<? extends BehaviorAdapter> adapterType() {
+    return HttpMockAdapter
   }
 
   def static any_http_request(@DelegatesTo(HttpMockRequestBehavior) Closure closure) {

@@ -4,13 +4,13 @@ import static spork.core.internal.ApplicationProperties.properties
 
 import org.mockserver.client.MockServerClient
 import spork.httpmock.behavior.HttpMockBehavior
-import spork.httpmock.behavior.HttpMockProcessor
+import spork.httpmock.behavior.HttpMockAdapter
 
-class HttpMockMockServerProcessor implements HttpMockProcessor {
+class HttpMockMockServerAdapter implements HttpMockAdapter {
   private static final LOCALHOST = 'localhost'
   private final MockServerClient client
 
-  HttpMockMockServerProcessor() {
+  HttpMockMockServerAdapter() {
     def url = properties().getAsString('spork.http-mock.mock-server.url', LOCALHOST)
     def port = properties().getAsInteger('spork.http-mock.mock-server.port')
     client = new MockServerClient(url, port)

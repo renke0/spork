@@ -35,11 +35,11 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
       thrown(TestConfigurationException)
   }
 
-  def "processorType()"() {
+  def "adapterType()"() {
     when:
-      def type = new HttpMockBehaviorDsl().processorType()
+      def type = new HttpMockBehaviorDsl().adapterType()
     then:
-      type == HttpMockProcessor
+      type == HttpMockAdapter
   }
 
   def "any_http_request()"() {

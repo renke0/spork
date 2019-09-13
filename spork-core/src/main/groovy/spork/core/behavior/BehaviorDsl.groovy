@@ -1,14 +1,14 @@
 package spork.core.behavior
 
-import static BehaviorProcessorProvider.behaviorProcessorProvider
+import static BehaviorAdapterProvider.behaviorAdapterProvider
 import static groovy.lang.Closure.DELEGATE_ONLY
 
 abstract class BehaviorDsl {
-  protected abstract Class<? extends BehaviorProcessor> processorType()
+  protected abstract Class<? extends BehaviorAdapter> adapterType()
 
   protected setup(Behavior behavior) {
-    def processor = behaviorProcessorProvider().getProcessorOfType(processorType())
-    processor.setup(behavior)
+    def adapter = behaviorAdapterProvider().getAdapterOfType(adapterType())
+    adapter.setup(behavior)
     return behavior
   }
 

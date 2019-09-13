@@ -1,23 +1,23 @@
 package spork.core.lang
 
-import spork.core.behavior.BehaviorProcessor
-import spork.core.behavior.BehaviorProcessorProvider
+import spork.core.behavior.BehaviorAdapter
+import spork.core.behavior.BehaviorAdapterProvider
 import spork.test.SporkSpecification
 
 class IntegrationSpec extends SporkSpecification {
-  def "cleanup() -> reset processors"() {
+  def "cleanup() -> reset adapters"() {
     given:
-      BehaviorProcessorProvider behaviorProcessorProviderMock = Mock()
-      BehaviorProcessor processor1 = Mock()
-      BehaviorProcessor processor2 = Mock()
+      BehaviorAdapterProvider behaviorAdapterProviderMock = Mock()
+      BehaviorAdapter adapter1 = Mock()
+      BehaviorAdapter adapter2 = Mock()
 
-      GroovyMock(BehaviorProcessorProvider, global: true)
-      BehaviorProcessorProvider.behaviorProcessorProvider() >> behaviorProcessorProviderMock
-      behaviorProcessorProviderMock.processors() >> [processor1, processor2]
+      GroovyMock(BehaviorAdapterProvider, global: true)
+      BehaviorAdapterProvider.behaviorAdapterProvider() >> behaviorAdapterProviderMock
+      behaviorAdapterProviderMock.adapters() >> [adapter1, adapter2]
     when:
       new Integration().cleanup()
     then:
-      1 * processor1.reset()
-      1 * processor2.reset()
+      1 * adapter1.reset()
+      1 * adapter2.reset()
   }
 }
