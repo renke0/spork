@@ -1,6 +1,5 @@
 package spork.core.behavior
 
-import static org.reflections.util.ClasspathHelper.forJavaClassPath
 import static spork.core.error.TestConfigurationException.checkConfiguration
 
 import org.reflections.Reflections
@@ -47,5 +46,12 @@ class BehaviorProcessorProvider {
     checkConfiguration(!processors.empty, "There are no processors found for ${processorInterface.name}")
     checkConfiguration(processors.size() == 1, "There are multiple processors found for ${processorInterface.name}")
     return processors.first()
+  }
+
+  static Collection<URL> forJavaClassPath() {
+    def javaClassPath = System.getProperty("java.class.path")
+    return javaClassPath.split(File.pathSeparator)
+      .collect { new File(it).toURI().toURL() }
+      .unique { it.toExternalForm() }
   }
 }

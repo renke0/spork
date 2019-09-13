@@ -7,11 +7,12 @@ import spork.httpmock.behavior.HttpMockBehavior
 import spork.httpmock.behavior.HttpMockProcessor
 
 class HttpMockMockServerProcessor implements HttpMockProcessor {
+  private static final LOCALHOST = 'localhost'
   private final MockServerClient client
 
   HttpMockMockServerProcessor() {
-    def url = properties().getPropertyAsString('spork.http-mock.mock-server.url')
-    def port = properties().getPropertyAsInteger('spork.http-mock.mock-server.port')
+    def url = properties().getAsString('spork.http-mock.mock-server.url', LOCALHOST)
+    def port = properties().getAsInteger('spork.http-mock.mock-server.port')
     client = new MockServerClient(url, port)
   }
 
@@ -19,7 +20,7 @@ class HttpMockMockServerProcessor implements HttpMockProcessor {
   Object setup(HttpMockBehavior behavior) {
     client.when(new RequestBuilder(behavior.request).build())
       .respond(new ResponseBuilder(behavior.response).build())
-    return null
+    return behavior
   }
 
   @Override

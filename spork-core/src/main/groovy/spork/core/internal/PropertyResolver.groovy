@@ -12,42 +12,43 @@ class PropertyResolver {
     initializeProperties(propertyFilePath)
   }
 
-  String getPropertyAsString(String property) {
-    return rawValue(property) as String
+  String getAsString(String property, String defaultValue = null) {
+    def raw = rawValue(property)
+    return raw != null ? raw as String : defaultValue
   }
 
-  BigDecimal getPropertyAsDecimal(String property) {
-    def value = getPropertyAsString(property)
+  BigDecimal getAsDecimal(String property, BigDecimal defaultValue = null) {
+    def value = getAsString(property)
     try {
-      return value ? new BigDecimal(value) : null
+      return value ? new BigDecimal(value) : defaultValue
     } catch (NumberFormatException e) {
       throw new TestConfigurationException("Property $property is not a decimal", e)
     }
   }
 
-  Integer getPropertyAsInteger(String property) {
-    def value = getPropertyAsString(property)
+  Integer getAsInteger(String property, Integer defaultValue = null) {
+    def value = getAsString(property)
     try {
-      return value ? Integer.valueOf(value) : null
+      return value ? Integer.valueOf(value) : defaultValue
     } catch (NumberFormatException e) {
       throw new TestConfigurationException("Property $property is not an integer", e)
     }
   }
 
-  Boolean getPropertyAsBoolean(String property) {
-    def value = getPropertyAsString(property)
+  Boolean getAsBoolean(String property, Boolean defaultValue = null) {
+    def value = getAsString(property)
     switch (value) {
       case 'true': return true
       case 'false': return false
-      case null: return null
+      case null: return defaultValue
       default: throw new TestConfigurationException("Property $property is not a boolean")
     }
   }
 
-  List getPropertyAsList(String property) {
+  List getAsList(String property, List defaultValue = null) {
     def list = rawValue(property)
     checkConfiguration(!list || list instanceof List, "Property $property is not a list")
-    return list ? list.collect { String.valueOf(it) } : null
+    return list ? list.collect { String.valueOf(it) } : defaultValue
   }
 
   private void initializeProperties(String propertyFilePath) {

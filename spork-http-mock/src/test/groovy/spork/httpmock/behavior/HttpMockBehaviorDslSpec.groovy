@@ -1,5 +1,7 @@
 package spork.httpmock.behavior
 
+import spork.core.error.TestConfigurationException
+import spork.http.HttpStatus
 import spork.httpmock.behavior.HttpMockBehaviorDsl.HttpMockRequestBehavior
 import spork.httpmock.behavior.HttpMockBehaviorDsl.HttpMockResponseBehavior
 import spork.test.SporkSpecification
@@ -10,6 +12,7 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
       GroovySpy(HttpMockBehaviorDsl, global: true)
       def request = new HttpMockRequestBehavior()
       def response = new HttpMockResponseBehavior()
+      response.with_status(randomItem(HttpStatus.values()))
       def dsl = new HttpMockBehaviorDsl()
       new HttpMockBehaviorDsl() >> dsl
     when:
@@ -20,6 +23,16 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
           assert behavior.request == request.request
           assert behavior.response == response.response
       }
+  }
+
+  def "httpMock() -> no status"() {
+    given:
+      def request = new HttpMockRequestBehavior()
+      def response = new HttpMockResponseBehavior()
+    when:
+      HttpMockBehaviorDsl.httpMock(request, response)
+    then:
+      thrown(TestConfigurationException)
   }
 
   def "processorType()"() {

@@ -12,13 +12,17 @@ class SporkSpecification extends Specification {
   static final LETTERS = LOWERCASE + UPPERCASE
   static final ALPHANUMERIC = LETTERS + DIGITS
 
-  static randomString(int length = 5) {
+  static randomString(int length = 5, String fromSample = ALPHANUMERIC) {
     return new Random()
       .with {
         (1..length)
-          .collect { ALPHANUMERIC[nextInt(ALPHANUMERIC.length())] }
+          .collect { fromSample[nextInt(fromSample.length())] }
           .join()
       }
+  }
+
+  static randomLowercaseString(int length = 5) {
+    return randomString(length, LOWERCASE)
   }
 
   static <T> T randomItem(List<T> list) {

@@ -3,7 +3,6 @@ dependencies {
   api("org.spockframework:spock-core")
   api("org.reflections:reflections")
   api("org.yaml:snakeyaml")
-  api("javax.servlet:javax.servlet-api")
   api("org.slf4j:slf4j-api")
   api("ch.qos.logback:logback-classic")
 

@@ -19,9 +19,9 @@ class PropertyResolverSpec extends SporkSpecification {
       !instance.properties.isEmpty()
   }
 
-  def "getPropertyAsString()"() {
+  def "getAsString()"() {
     when:
-      def value = propertyResolver.getPropertyAsString(property)
+      def value = propertyResolver.getAsString(property)
     then:
       value == expectation
     where:
@@ -31,9 +31,9 @@ class PropertyResolverSpec extends SporkSpecification {
       'non-existing-root' | 'non-existing.property.non-existing' | null
   }
 
-  def "getPropertyAsInteger() -> #label"() {
+  def "getAsInteger() -> #label"() {
     when:
-      def value = propertyResolver.getPropertyAsInteger(property)
+      def value = propertyResolver.getAsInteger(property)
     then:
       value == expectation
     where:
@@ -42,16 +42,16 @@ class PropertyResolverSpec extends SporkSpecification {
       'non-existing' | 'test.property.non-existing' | null
   }
 
-  def "getPropertyAsInteger() -> non integer"() {
+  def "getAsInteger() -> non integer"() {
     when:
-      propertyResolver.getPropertyAsInteger('test.property.string')
+      propertyResolver.getAsInteger('test.property.string')
     then:
       thrown(TestConfigurationException)
   }
 
-  def "getPropertyAsDecimal() -> #label"() {
+  def "getAsDecimal() -> #label"() {
     when:
-      def value = propertyResolver.getPropertyAsDecimal(property)
+      def value = propertyResolver.getAsDecimal(property)
     then:
       value == expectation
     where:
@@ -60,16 +60,16 @@ class PropertyResolverSpec extends SporkSpecification {
       'non-existing' | 'test.property.non-existing' | null
   }
 
-  def "getPropertyAsDecimal() -> non decimal"() {
+  def "getAsDecimal() -> non decimal"() {
     when:
-      propertyResolver.getPropertyAsDecimal('test.property.string')
+      propertyResolver.getAsDecimal('test.property.string')
     then:
       thrown(TestConfigurationException)
   }
 
-  def "getPropertyAsBoolean() -> #label"() {
+  def "getAsBoolean() -> #label"() {
     when:
-      def value = propertyResolver.getPropertyAsBoolean(property)
+      def value = propertyResolver.getAsBoolean(property)
     then:
       value == expectation
     where:
@@ -79,16 +79,16 @@ class PropertyResolverSpec extends SporkSpecification {
       'non-existing'   | 'test.property.non-existing'  | null
   }
 
-  def "getPropertyAsBoolean() -> non boolean"() {
+  def "getAsBoolean() -> non boolean"() {
     when:
-      propertyResolver.getPropertyAsBoolean('test.property.integer')
+      propertyResolver.getAsBoolean('test.property.integer')
     then:
       thrown(TestConfigurationException)
   }
 
-  def "getPropertyAsList() -> #label"() {
+  def "getAsList() -> #label"() {
     when:
-      def value = propertyResolver.getPropertyAsList(property)
+      def value = propertyResolver.getAsList(property)
     then:
       value == expectation
     where:
@@ -97,9 +97,9 @@ class PropertyResolverSpec extends SporkSpecification {
       'non-existing' | 'test.property.non-existing' | null
   }
 
-  def "getPropertyAsList() -> non list"() {
+  def "getAsList() -> non list"() {
     when:
-      propertyResolver.getPropertyAsList('test.property.string')
+      propertyResolver.getAsList('test.property.string')
     then:
       thrown(TestConfigurationException)
   }
