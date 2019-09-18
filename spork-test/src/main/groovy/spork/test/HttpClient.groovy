@@ -20,15 +20,15 @@ class HttpClient {
   static Response request(String method, String url, Map body = null) {
     def requestBody = body ? RequestBody.create(toJson(body), MEDIA_TYPE_JSON) : emptyBody(method)
     return execute(new Request.Builder()
-      .url(url)
-      .method(method, requestBody)
-      .build())
+        .url(url)
+        .method(method, requestBody)
+        .build())
   }
 
   private static Response execute(Request request) {
     return new OkHttpClient()
-      .newCall(request)
-      .execute()
+        .newCall(request)
+        .execute()
   }
 
   private static emptyBody(String method) {

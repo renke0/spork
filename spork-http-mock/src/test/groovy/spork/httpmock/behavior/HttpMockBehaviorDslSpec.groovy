@@ -2,33 +2,30 @@ package spork.httpmock.behavior
 
 import spork.core.error.TestConfigurationException
 import spork.http.HttpStatus
-import spork.httpmock.behavior.HttpMockBehaviorDsl.HttpMockRequestBehavior
-import spork.httpmock.behavior.HttpMockBehaviorDsl.HttpMockResponseBehavior
 import spork.test.SporkSpecification
 
 class HttpMockBehaviorDslSpec extends SporkSpecification {
   def "httpMock()"() {
     given:
       GroovySpy(HttpMockBehaviorDsl, global: true)
-      def request = new HttpMockRequestBehavior()
-      def response = new HttpMockResponseBehavior()
+      def request = new HttpMockRequestBehaviorDsl()
+      def response = new HttpMockResponseBehaviorDsl()
       response.with_status(randomItem(HttpStatus.values()))
       def dsl = new HttpMockBehaviorDsl()
       new HttpMockBehaviorDsl() >> dsl
     when:
       HttpMockBehaviorDsl.httpMock(request, response)
     then:
-      1 * dsl.setup(_) >> {
-        HttpMockBehavior behavior ->
-          assert behavior.request == request.request
-          assert behavior.response == response.response
+      1 * dsl.setup(_) >> { HttpMockBehavior behavior ->
+        assert behavior.request == request.request
+        assert behavior.response == response.response
       }
   }
 
   def "httpMock() -> no status"() {
     given:
-      def request = new HttpMockRequestBehavior()
-      def response = new HttpMockResponseBehavior()
+      def request = new HttpMockRequestBehaviorDsl()
+      def response = new HttpMockResponseBehaviorDsl()
     when:
       HttpMockBehaviorDsl.httpMock(request, response)
     then:
@@ -48,7 +45,7 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
     when:
       def request = HttpMockBehaviorDsl.any_http_request(closure)
     then:
-      request instanceof HttpMockRequestBehavior
+      request instanceof HttpMockRequestBehaviorDsl
       closure.delegate == request
   }
 
@@ -58,7 +55,7 @@ class HttpMockBehaviorDslSpec extends SporkSpecification {
     when:
       def response = HttpMockBehaviorDsl.will_return_a_response(closure)
     then:
-      response instanceof HttpMockResponseBehavior
+      response instanceof HttpMockResponseBehaviorDsl
       closure.delegate == response
   }
 }

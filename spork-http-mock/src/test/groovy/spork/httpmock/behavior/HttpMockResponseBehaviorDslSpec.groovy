@@ -4,13 +4,12 @@ import groovy.transform.TupleConstructor
 import spock.lang.Subject
 import spock.lang.Unroll
 import spork.http.HttpStatus
-import spork.httpmock.behavior.HttpMockBehaviorDsl.HttpMockResponseBehavior
 import spork.test.SporkSpecification
 
 @Unroll
-class HttpMockResponseBehaviorSpec extends SporkSpecification {
+class HttpMockResponseBehaviorDslSpec extends SporkSpecification {
   @Subject
-  private responseBehavior = new HttpMockResponseBehavior()
+  private responseBehavior = new HttpMockResponseBehaviorDsl()
 
   def "with_status()"() {
     given:

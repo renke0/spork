@@ -14,13 +14,13 @@ class MyFirstIntegration extends Integration {
   def test() {
     when:
       httpMock(
-        any_http_request {
-          to_path('/mypath')
-        },
-        will_return_a_response {
-          with_status(HttpStatus.OK)
-          with_body([hi: "I'm a body"])
-        })
+          any_http_request {
+            to_path('/mypath')
+          },
+          will_return_a_response {
+            with_status(HttpStatus.OK)
+            with_body([hi: "I'm a body"])
+          })
 
       def connection = new URL('http://localhost:1080/mypath').openConnection()
       print(connection.inputStream.text)
@@ -32,13 +32,13 @@ class MyFirstIntegration extends Integration {
   def test2() {
     when:
       httpMock(
-        any_http_request {
-          to_path('/mypath')
-        },
-        will_return_a_response {
-          with_status(HttpStatus.OK)
-          with_body([hi: "I'm another body"])
-        })
+          any_http_request {
+            to_path('/mypath')
+          },
+          will_return_a_response {
+            with_status(HttpStatus.OK)
+            with_body([hi: "I'm another body"])
+          })
 
       def connection = new URL('http://localhost:1080/mypath').openConnection()
       print(connection.inputStream.text)

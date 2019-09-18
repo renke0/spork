@@ -17,16 +17,15 @@ import org.mockserver.model.NottableString
 import org.mockserver.model.Parameters
 import spork.core.error.TestConfigurationException
 import spork.httpmock.behavior.HttpMockRequest
-import spork.httpmock.matcher.BodyMatcher
-import spork.httpmock.matcher.BodyMatcher.JsonBodyMatcher
-import spork.httpmock.matcher.BodyMatcher.JsonPathBodyMatcher
-import spork.httpmock.matcher.BodyMatcher.MatchingStrategy
-import spork.httpmock.matcher.Matcher
-import spork.httpmock.matcher.NamedParameter
-import spork.httpmock.matcher.Negated
-import spork.httpmock.matcher.StringMatcher
-import spork.httpmock.matcher.StringMatcher.PlainStringMatcher
-import spork.httpmock.matcher.StringMatcher.RegexStringMatcher
+import spork.httpmock.value.BodyValue
+import spork.httpmock.value.BodyValue.JsonBodyValue
+import spork.httpmock.value.BodyValue.JsonPathBodyValue
+import spork.httpmock.value.BodyValue.MatchingStrategy
+import spork.httpmock.value.NamedParameter
+import spork.httpmock.value.Negated
+import spork.httpmock.value.StringValue
+import spork.httpmock.value.StringValue.PlainStringValue
+import spork.httpmock.value.StringValue.RegexStringValue
 
 @PackageScope
 class RequestBuilder {
@@ -38,99 +37,99 @@ class RequestBuilder {
 
   HttpRequest build() {
     return HttpRequest.request()
-      .withMethod(requestMethod() as NottableString)
-      .withPath(path() as NottableString)
-      .withHeaders(headers() as Headers)
-      .withQueryStringParameters(queryParameters() as Parameters)
-      .withBody(body() as Body)
+        .withMethod(requestMethod() as NottableString)
+        .withPath(path() as NottableString)
+        .withHeaders(headers() as Headers)
+        .withQueryStringParameters(queryParameters() as Parameters)
+        .withBody(body() as Body)
   }
 
   private NottableString requestMethod() {
-    return resolveStringMatcher(mockRequest.method)
+    return resolveStringValue(mockRequest.method)
   }
 
   private NottableString path() {
-    return resolveStringMatcher(mockRequest.path)
+    return resolveStringValue(mockRequest.path)
   }
 
   private Headers headers() {
     return mockRequest
-      .headers
-      .inject(new Headers()) { h, n -> resolveKeyValue(h, n) }
+        .headers
+        .inject(new Headers()) { h, n -> resolveKeyValue(h, n) }
   }
 
   private Parameters queryParameters() {
     return mockRequest
-      .queryParameters
-      .inject(new Parameters()) { p, n -> resolveKeyValue(p, n) }
+        .queryParameters
+        .inject(new Parameters()) { p, n -> resolveKeyValue(p, n) }
   }
 
   private Body body() {
-    return resolveBody(mockRequest.bodyMatcher)
+    return resolveBody(mockRequest.bodyValue)
   }
 
-  private static Body jsonBody(JsonBodyMatcher jsonBodyMatcher) {
-    def matchType = jsonBodyMatcher.strategy == MatchingStrategy.STRICT ? STRICT : ONLY_MATCHING_FIELDS
-    return json(jsonBodyMatcher.json, matchType)
+  private static Body jsonBody(JsonBodyValue bodyValue) {
+    def matchType = bodyValue.strategy == MatchingStrategy.STRICT ? STRICT : ONLY_MATCHING_FIELDS
+    return json(bodyValue.json, matchType)
   }
 
-  private static Body jsonPathBody(JsonPathBodyMatcher jsonPathBodyMatcher) {
-    return jsonPath(jsonPathBodyMatcher.jsonPath)
+  private static Body jsonPathBody(JsonPathBodyValue bodyValue) {
+    return jsonPath(bodyValue.jsonPath)
   }
 
   private static <T extends KeysToMultiValues> T resolveKeyValue(T holder, NamedParameter parameter) {
-    def key = resolveStringMatcher(parameter.nameMatcher)
-    def value = resolveStringMatcher(parameter.valueMatcher)
+    def key = resolveStringValue(parameter.key)
+    def value = resolveStringValue(parameter.value)
     return holder.withEntry(key, value) as T
   }
 
-  private static NottableString resolveStringMatcher(StringMatcher matcher) {
-    if (matcher) {
-      def resolution = resolveNegation(matcher)
-      def value = asStringNotation(resolution.matcher as StringMatcher)
+  private static NottableString resolveStringValue(StringValue stringValue) {
+    if (stringValue) {
+      def resolution = resolveNegation(stringValue)
+      def value = asStringNotation(resolution.value as StringValue)
       return resolution.negate ? not(value) : string(value)
     }
     return null
   }
 
-  private static Body resolveBody(BodyMatcher bodyMatcher) {
-    if (bodyMatcher) {
-      def resolution = resolveNegation(bodyMatcher)
-      def value = asBody(resolution.matcher as BodyMatcher)
+  private static Body resolveBody(BodyValue bodyValue) {
+    if (bodyValue) {
+      def resolution = resolveNegation(bodyValue)
+      def value = asBody(resolution.value as BodyValue)
       return JsonBody.not(value, resolution.negate)
     }
     return null
   }
 
-  private static resolveNegation(Matcher matcher) {
+  private static resolveNegation(def negated) {
     def negate = false
-    def actualMatcher = matcher
-    while (actualMatcher instanceof Negated) {
-      actualMatcher = (actualMatcher as Negated).matcher
+    def actual = negated
+    while (actual instanceof Negated) {
+      actual = (actual as Negated).wrapped
       negate = !negate
     }
-    return [matcher: actualMatcher, negate: negate]
+    return [value: actual, negate: negate]
   }
 
-  private static String asStringNotation(StringMatcher stringMatcher) {
-    switch (stringMatcher.class) {
-      case PlainStringMatcher:
-        return (stringMatcher as PlainStringMatcher).plainValue
-      case RegexStringMatcher:
-        return (stringMatcher as RegexStringMatcher).regex.pattern()
+  private static String asStringNotation(StringValue stringValue) {
+    switch (stringValue.class) {
+      case PlainStringValue:
+        return (stringValue as PlainStringValue).plainValue
+      case RegexStringValue:
+        return (stringValue as RegexStringValue).regex.pattern()
       default:
-        throw new TestConfigurationException("String matcher type not known: ${stringMatcher.class}")
+        throw new TestConfigurationException("String value type not known: ${stringValue.class}")
     }
   }
 
-  private static Body asBody(BodyMatcher bodyMatcher) {
-    switch (bodyMatcher.class) {
-      case JsonBodyMatcher:
-        return jsonBody(bodyMatcher as JsonBodyMatcher)
-      case JsonPathBodyMatcher:
-        return jsonPathBody(bodyMatcher as JsonPathBodyMatcher)
+  private static Body asBody(BodyValue bodyValue) {
+    switch (bodyValue.class) {
+      case JsonBodyValue:
+        return jsonBody(bodyValue as JsonBodyValue)
+      case JsonPathBodyValue:
+        return jsonPathBody(bodyValue as JsonPathBodyValue)
       default:
-        throw new TestConfigurationException("Body matcher type not known: ${bodyMatcher.class}")
+        throw new TestConfigurationException("Body value type not known: ${bodyValue.class}")
     }
   }
 }

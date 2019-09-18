@@ -14,11 +14,11 @@ class SporkSpecification extends Specification {
 
   static randomString(int length = 5, String fromSample = ALPHANUMERIC) {
     return new Random()
-      .with {
-        (1..length)
-          .collect { fromSample[nextInt(fromSample.length())] }
-          .join()
-      }
+        .with {
+          (1..length)
+              .collect { fromSample[nextInt(fromSample.length())] }
+              .join()
+        }
   }
 
   static randomLowercaseString(int length = 5) {

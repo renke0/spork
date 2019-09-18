@@ -2,7 +2,6 @@ package spork.core.lang
 
 import static spork.core.lang.ContextLevel.SCENARIO
 import static spork.core.lang.ContextLevel.TEST_CASE
-
 import static spork.core.lang.TestContext.testContext
 
 import spock.lang.Subject
@@ -66,12 +65,12 @@ class TestContextSpec extends SporkSpecification {
   def "clearAll()"() {
     given:
       ContextLevel.values()
-        .each { testContext.save(it, randomString(), randomString()) }
+          .each { testContext.save(it, randomString(), randomString()) }
     when:
       testContext.clearAll()
     then:
       innerContext().entrySet()
-        .each { it.value.isEmpty() }
+          .each { it.value.isEmpty() }
   }
 
   def "get() -> getting from #level context"() {

@@ -6,7 +6,7 @@ import static groovy.lang.Closure.DELEGATE_ONLY
 abstract class BehaviorDsl {
   protected abstract Class<? extends BehaviorAdapter> adapterType()
 
-  protected setup(Behavior behavior) {
+  protected setup(Behavior behavior,def a=null) {
     def adapter = behaviorAdapterProvider().getAdapterOfType(adapterType())
     adapter.setup(behavior)
     return behavior

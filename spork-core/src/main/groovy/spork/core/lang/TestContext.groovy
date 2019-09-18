@@ -19,29 +19,28 @@ class TestContext {
 
   private TestContext() {
     context = ofEntries(
-      ContextLevel.values()
-        .collect { new MapEntry(it, [:]) } as Entry[])
+        ContextLevel.values().collect { new MapEntry(it, [:]) } as Entry[])
   }
 
   void save(ContextLevel level = SCENARIO, String key, def value) {
     context.get(level)
-      .put(key, value)
+        .put(key, value)
   }
 
   void clear(ContextLevel level) {
     context.get(level)
-      .clear()
+        .clear()
   }
 
   void clearAll() {
     ContextLevel.values()
-      .each { clear(it) }
+        .each { clear(it) }
   }
 
   def get(String key) {
     return ContextLevel.values()
-      .collect { context.get(it) }
-      .find { it.containsKey(key) }
-      ?.get(key)
+        .collect { context.get(it) }
+        .find { it.containsKey(key) }
+        ?.get(key)
   }
 }

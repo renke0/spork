@@ -17,9 +17,9 @@ class ResponseBuilder {
 
   HttpResponse build() {
     return new HttpResponse()
-      .withStatusCode(statusCode())
-      .withBody(body() as JsonBody)
-      .withHeaders(headers() as Headers)
+        .withStatusCode(statusCode())
+        .withBody(body() as JsonBody)
+        .withHeaders(headers() as Headers)
   }
 
   private int statusCode() {
@@ -35,7 +35,7 @@ class ResponseBuilder {
 
   private Headers headers() {
     return mockResponse
-      .headers
-      .inject(new Headers()) { header, entry -> header.withEntry(entry.key, entry.value as String[]) }
+        .headers
+        .inject(new Headers()) { header, entry -> header.withEntry(entry.key, entry.value as String[]) }
   }
 }

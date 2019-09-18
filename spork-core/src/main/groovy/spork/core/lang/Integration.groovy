@@ -7,7 +7,7 @@ import spock.lang.Specification
 class Integration extends Specification {
   def cleanup() {
     behaviorAdapterProvider()
-      .adapters()
-      *.reset()
+        .adapters()
+        *.reset()
   }
 }

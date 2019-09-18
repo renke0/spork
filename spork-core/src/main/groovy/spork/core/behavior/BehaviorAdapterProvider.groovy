@@ -23,7 +23,7 @@ class BehaviorAdapterProvider {
 
   def <T extends BehaviorAdapter> T getAdapterOfType(Class<T> behaviorAdapterInterface) {
     checkConfiguration(adapters.containsKey(behaviorAdapterInterface),
-      "There is no adapter for behavior ${behaviorAdapterInterface.name}")
+        "There is no adapter for behavior ${behaviorAdapterInterface.name}")
     return adapters.get(behaviorAdapterInterface) as T
   }
 
@@ -33,8 +33,8 @@ class BehaviorAdapterProvider {
 
   private static Map<Class, BehaviorAdapter> initialize() {
     def scanner = new Reflections(new ConfigurationBuilder()
-      .addUrls(forJavaClassPath())
-      .setScanners(new SubTypesScanner()))
+        .addUrls(forJavaClassPath())
+        .setScanners(new SubTypesScanner()))
 
     def allAdapters = scanner.getSubTypesOf(BehaviorAdapter)
     def interfaces = allAdapters.findAll { it.isInterface() && it.interfaces.contains(BehaviorAdapter) }
@@ -51,7 +51,7 @@ class BehaviorAdapterProvider {
   static Collection<URL> forJavaClassPath() {
     def javaClassPath = System.getProperty("java.class.path")
     return javaClassPath.split(File.pathSeparator)
-      .collect { new File(it).toURI().toURL() }
-      .unique { it.toExternalForm() }
+        .collect { new File(it).toURI().toURL() }
+        .unique { it.toExternalForm() }
   }
 }
